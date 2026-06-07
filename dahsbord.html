@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>کلاغ بای فایل</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* style.css - Embedded */
+
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Vazir', sans-serif; /* Note: Vazir font needs to be properly linked */
+            direction: rtl;
+            background-color: #383838;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* Header */
+        .header {
+            background-color: #2c2c2c;
+            color: #ffffff;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: 60px; /* Fixed header height */
+        }
+
+        .header .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .header .user-profile {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .header .user-profile i {
+            margin-left: 0.5rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #4d4d4d;
+            padding-top: 1rem;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+            height: calc(100vh - 60px); /* Adjust based on header height */
+            position: fixed;
+            top: 60px; /* Should match header height */
+            right: 0;
+            overflow-y: auto;
+            transition: width 0.3s ease; /* Smooth transition for collapse */
+        }
+
+        .sidebar nav ul li {
+            padding: 0.8rem 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar nav ul li i {
+            margin-left: 0.8rem;
+            font-size: 1.1rem;
+            width: 20px; /* Fixed width for icons */
+            text-align: center;
+        }
+
+        .sidebar nav ul li:hover {
+            background-color: #e9ecef;
+            color: #007bff;
+        }
+
+        .sidebar nav ul li.active {
+            background-color: #232323;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        /* Content Area */
+        .content {
+            margin-right: 250px; /* Same as sidebar width */
+            padding: 2rem;
+            flex-grow: 1;
+            transition: margin-right 0.3s ease; /* Smooth transition for content */
+        }
+
+        .content h1, .content h2 {
+            color: #dfdfdf;
+            margin-bottom: 1rem;
+        }
+        
+        .content p {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .section {
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .section.active {
+            display: block; /* Shown when active */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px; /* Collapsed sidebar */
+                padding-top: 0;
+            }
+            .sidebar nav ul li span { /* Hide text labels when collapsed */
+                display: none;
+            }
+            .sidebar nav ul li { /* Center icons in collapsed sidebar */
+                justify-content: center;
+            }
+            .sidebar nav ul li i {
+                margin-left: 0; /* Remove left margin for centered icon */
+            }
+
+            .content {
+                margin-right: 60px; /* Adjust content margin */
+            }
+            .header .logo {
+                font-size: 1.2rem;
+            }
+            .header .user-profile {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Basic card styling for dashboard summary */
+        .card {
+            background-color: #555555;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .card i {
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            color: #efefef;
+        }
+
+        /* Add styles for specific sections as needed later */
+
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">کلاغ فایل فایل تر از همیشه</div>
+        <div class="user-profile">
+            <i class="fas fa-user"></i> نام کاربری <i class="fas fa-chevron-down"></i>
+            <!-- Dropdown menu for profile options can be added here -->
+        </div>
+    </header>
+
+    <aside class="sidebar">
+        <nav>
+            <ul>
+                <li class="sidebar-item active" data-section="home">
+                    <i class="fas fa-home"></i> <span>داشبورد اصلی</span>
+                </li>
+                <li class="sidebar-item" data-section="github">
+                    <i class="fab fa-github"></i> <span>گیت‌هاب</span>
+                </li>
+                <li class="sidebar-item" data-section="downloads">
+                    <i class="index.Downloads.html"></i> <span>دانلود سنتر</span>
+                </li>
+                <li class="sidebar-item" data-section="os">
+                    <i class="fas fa-laptop-code"></i> <span>سیستم عامل‌ها</span>
+                </li>
+                <li class="sidebar-item" data-section="gaming">
+                    <i class="fas fa-gamepad"></i> <span>گیمینگ</span>
+                </li>
+                <li class="sidebar-item" data-section="video">
+                    <i class="fas fa-film"></i> <span>ویدیو</span>
+                </li>
+                <li class="sidebar-item" data-section="movies">
+                    <i class="fas fa-tv"></i> <span>فیلم و سریال</span>
+                </li>
+                <!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+                <li class="sidebar-item" data-section="chat">
+                    <i class="index.chat.html"></i> <span>چت</span>
+                    
+                <!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+            
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <section id="home" class="section active">
+            <h1>به داشبورد کلاغ فایل خوش آمدید!</h1>
+            <p>اینجا می‌توانید به تمام سرویس‌های ما دسترسی داشته باشید. بخش مورد نظر خود را از منوی کناری انتخاب کنید.</p>
+            
+            <div class="dashboard-cards">
+                <div class="card" onclick="loadSection('github')">
+                    <i class="fab fa-github"></i>
+                    <h3>گیت‌هاب</h3>
+                    <p>مدیریت پروژه‌های شما و مشاهده فعالیت‌ها.</p>
+                </div>
+                <div class="card" onclick="loadSection('downloads')">
+                    <i class="index.Downloads.html"></i>
+                    <h3>دانلود سنتر</h3>
+                    <p>دانلود انواع نرم‌افزارها و ابزارها.</p>
+                </div>
+                <div class="card" onclick="loadSection('os')">
+                    <i class="fas fa-laptop-code"></i>
+                    <h3>سیستم عامل‌ها</h3>
+                    <p>معرفی و بررسی سیستم‌عامل‌های مختلف.</p>
+                </div>
+                <div class="card" onclick="loadSection('gaming')">
+                    <i class="fas fa-gamepad"></i>
+                    <h3>گیمینگ</h3>
+                    <p>آخرین استریم‌ها و اخبار دنیای بازی.</p>
+                </div>
+                <div class="card" onclick="loadSection('video')">
+                    <i class="fas fa-film"></i>
+                    <h3>ویدیو</h3>
+                    <p>مشاهده و آپلود ویدیوهای مورد علاقه.</p>
+                </div>
+                <div class="card" onclick="loadSection('movies')">
+                    <i class="fas fa-tv"></i>
+                    <h3>فیلم و سریال</h3>
+                    <p>دسترسی به جدیدترین فیلم‌ها و سریال‌ها.</p>
+                </div>
+                <div class="card" onclick="loadSection('chat')">
+                    <i class="index.chat.html"></i>
+                    <h3>چت</h3>
+                    <p>ارتباط زنده با دوستان و همکاران.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="github" class="section">
+            <h2>پروژه گیت‌هاب</h2>
+            <p>در این بخش، فعالیت‌های مربوط به مخازن گیت‌هاب شما نمایش داده می‌شود. (این محتوا به زودی اضافه خواهد شد)</p>
+            <!-- GitHub content will be loaded here -->
+        </section>
+<!--/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+        <section id="downloads" class="section">
+            <h2>مرکز دانلود</h2>
+        <div class="dashboard-grid">
+      <div class="card">
+        <h3>دانلود</h3>
+        <p>کلاغ صورتی </p>
+        <a href="Downloads.html">ورود به کلاغ دانلود صورتی(ویندوز)</a>
+      </div>
+
+
+       <div class="card">
+        <h3>دانلود</h3>
+        <p>کلاغ ابی </p>
+        <a href="soft98.html" > ورود به کلاغ دانلود صورتی(لینوکس dep)برای ورود منو بمال</a>
+      </div>
+
+
+       <div class="card">
+        <h3>دانلود</h3>
+        <p>کلاغ سیاه </p>
+        <a href="Downloads.html"  > ورود به کلاغ دانلود صورتی(مک)برای وارد منو بمال</a>
+      </div>
+
+
+
+            <!-- Downloads content will be loaded here -->
+        </section>
+<!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+        <section id="os" class="section">
+            <h2>سیستم عامل‌ها</h2>
+            <p>اطلاعاتی در مورد سیستم‌عامل‌های مختلف و کاربردهای آن‌ها. (این محتوا به زودی اضافه خواهد شد)</p>
+            <!-- OS content will be loaded here -->
+        </section>
+
+        <section id="gaming" class="section">
+            <h2>گیمینگ</h2>
+            <p>آخرین استریم‌های زنده و اطلاعات دنیای بازی. (این محتوا به زودی اضافه خواهد شد)</p>
+            <!-- Gaming content will be loaded here -->
+        </section>
+
+        <section id="video" class="section">
+            <h2>ویدیو (آپارات)</h2>
+            <p>مرجع ویدیوهای آنلاین شما. (این محتوا به زودی اضافه خواهد شد)</p>
+            <!-- Video content will be loaded here -->
+        </section>
+
+        <section id="movies" class="section">
+            <h2>فیلم و سریال</h2>
+            <p>مجموعه‌ای از فیلم‌ها و سریال‌های روز دنیا. (این محتوا به زودی اضافه خواهد شد)</p>
+            <!-- Movies & Series content will be loaded here -->
+        </section>
+<!--=========================================================================================================================-=-=-=-=-=-=-=-=-========================================-->
+     <section id="chat" class="section">
+            <h2>با کلاغ نامه بفرست</h2>
+        <div class="dashboard-grid">
+      <div class="card">
+        <h3>گوکلاغ</h3>
+        <p>کلاغ صورتی </p>
+        <a href="index.Downloads.html">گره های کلاغ ها </a>
+      </div>
+       <div class="card">
+        <h3>یوکلاغ</h3>
+        <p>کلاغ ابی </p>
+        <a href="index.Downloads.html" >کیا از کلاغ استفاده میکنن؟؟؟</a>
+        <!-- Downloads content will be loaded here -->
+        </section>
+<!--=========================================================================================================================-=-=-=-=-=-=-=-=-========================================-->
+    </main>
+
+    <script>
+        // script.js - Embedded
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            const sections = document.querySelectorAll('.section');
+
+            // Function to handle sidebar item clicks
+            const handleSidebarClick = (item) => {
+                // Remove 'active' class from all sidebar items
+                sidebarItems.forEach(i => i.classList.remove('active'));
+                // Add 'active' class to the clicked item
+                item.classList.add('active');
+
+                // Get the section ID from the data attribute
+                const sectionId = item.getAttribute('data-section');
+
+                // Hide all sections
+                sections.forEach(section => section.classList.remove('active'));
+
+                // Show the target section
+                const targetSection = document.getElementById(sectionId);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+            };
+
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    handleSidebarClick(item);
+                });
+            });
+
+            // Set the initial active section (e.g., 'home')
+            const initialActiveItem = document.querySelector('.sidebar-item.active');
+            if (initialActiveItem) {
+                 // Ensure home is active if no other is pre-selected
+                 if (!initialActiveItem.classList.contains('active')) {
+                    handleSidebarClick(document.querySelector('.sidebar-item[data-section="home"]'));
+                 }
+            } else {
+                 handleSidebarClick(document.querySelector('.sidebar-item[data-section="home"]'));
+            }
+             document.getElementById('home').classList.add('active');
+        });
+
+        // Function to load a section (used by dashboard cards)
+        function loadSection(sectionId) {
+            const sidebarItem = document.querySelector(`.sidebar-item[data-section="${sectionId}"]`);
+            if (sidebarItem) {
+                // Manually trigger the click handler for the corresponding sidebar item
+                sidebarItem.click(); 
+            } else {
+                console.error(`Sidebar item for section '${sectionId}' not found.`);
+                // Optionally, display an error message to the user
+            }
+        }
+
+        // Optional: Add functionality for the user profile dropdown if needed later
+        // const userProfile = document.querySelector('.user-profile');
+        // userProfile.addEventListener('click', () => {
+        //     // Toggle dropdown menu logic
+        //     alert('Profile dropdown clicked!');
+        // });
+
+    </script>
+</body>
+</html>

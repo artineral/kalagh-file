@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Layer 5</title>
+
+<style>
+
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#000,#001a33,#00bfff);
+    font-family:tahoma;
+    color:white;
+}
+
+.box{
+    width:450px;
+    padding:40px;
+    background:rgba(0,0,0,0.9);
+    border:2px solid #00bfff;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 0 40px #00bfff;
+}
+
+h1{
+    color:#00bfff;
+    margin-bottom:20px;
+}
+
+.desc{
+    color:#ccc;
+    margin-bottom:15px;
+}
+
+input{
+    width:100%;
+    padding:15px;
+    border-radius:10px;
+    border:1px solid #00bfff;
+    background:#111;
+    color:white;
+    font-size:16px;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    margin-top:20px;
+    background:#00bfff;
+    border:none;
+    border-radius:10px;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    box-shadow:0 0 25px #00bfff;
+}
+
+#error{
+    margin-top:15px;
+    color:red;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>🔐 FINAL LOGIN LAYER 5</h1>
+
+<div class="desc">
+رمز نهایی ورود به داشبورد را وارد کنید
+</div>
+
+<input type="password" id="finalPass" placeholder="FINAL PASSWORD">
+
+<button onclick="checkFinal()">ورود به سیستم</button>
+
+<p id="error"></p>
+
+</div>
+
+<script>
+
+async function hashText(text){
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+const FINAL_HASH = "be03b39d664dd5045c808c2631bf5425664b0c843d5077890735a61b14b852d3";
+
+async function checkFinal(){
+
+    let pass = document.getElementById("finalPass").value
+        .trim();
+
+    let passHash = await hashText(pass);
+
+    if(passHash === FINAL_HASH){
+        window.location.href = "dahsbord.html";
+    } else {
+        document.getElementById("error").innerHTML = "❌ رمز نهایی اشتباه است";
+    }
+}
+
+</script>
+
+</body>
+</html>

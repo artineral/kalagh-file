@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Layer 3</title>
+
+<style>
+
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#000,#001133,#0088ff);
+    font-family:tahoma;
+    color:white;
+}
+
+.box{
+    width:450px;
+    padding:40px;
+    background:rgba(0,0,0,0.9);
+    border:2px solid #00bfff;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 0 30px #00bfff;
+}
+
+h1{
+    color:#00bfff;
+    margin-bottom:20px;
+}
+
+.question{
+    color:#ccc;
+    margin-bottom:15px;
+}
+
+input{
+    width:100%;
+    padding:15px;
+    border-radius:10px;
+    border:1px solid #00bfff;
+    background:#111;
+    color:white;
+    font-size:16px;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    margin-top:20px;
+    background:#00bfff;
+    border:none;
+    border-radius:10px;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+#error{
+    margin-top:15px;
+    color:red;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>🔐 SECURITY LAYER 3</h1>
+
+<div class="question">
+نام پروژه اصلی چیست؟
+</div>
+
+<input type="text" id="answer" placeholder="پاسخ را وارد کنید">
+
+<button onclick="checkAnswer()">ورود</button>
+
+<p id="error"></p>
+
+</div>
+
+<script>
+
+async function hashText(text){
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+const ANSWER_HASH = "da7383ab5225d0fabe649de3054b93b9a391ae1860915b5df13dda7e9e6efe64";
+
+async function checkAnswer(){
+
+    let answer = document.getElementById("answer").value
+        .toLowerCase()
+        .trim();
+
+    let answerHash = await hashText(answer);
+
+    if(answerHash === ANSWER_HASH){
+        window.location.href = "login4.html";
+    } else {
+        document.getElementById("error").innerHTML = "❌ پاسخ اشتباه است";
+    }
+}
+
+</script>
+
+</body>
+</html>

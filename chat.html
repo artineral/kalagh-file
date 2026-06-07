@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>با کلاغ گپ بزن</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Courier New", Courier, monospace;
+      background: #050505;
+      color: #00ff88;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(rgba(0,255,136,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,136,0.04) 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+      opacity: 0.35;
+      z-index: 0;
+    }
+
+    .chat-shell {
+      width: min(1400px, calc(100% - 24px));
+      height: min(900px, calc(100vh - 24px));
+      display: flex;
+      gap: 14px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .chat-main {
+      flex: 1;
+      background: rgba(10, 10, 10, 0.92);
+      border: 1px solid #00ff88;
+      box-shadow: 0 0 25px rgba(0, 255, 136, 0.35);
+      border-radius: 14px;
+      backdrop-filter: blur(6px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .chat-header {
+      padding: 18px 22px;
+      border-bottom: 1px solid rgba(0, 255, 136, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .chat-title {
+      margin: 0;
+      color: #00ffee;
+      font-size: 24px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 12px rgba(0, 255, 238, 0.7);
+    }
+
+    .online-badge {
+      border: 1px solid #00ff88;
+      background: #0b0b0b;
+      color: #00ff88;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      white-space: nowrap;
+      box-shadow: 0 0 10px rgba(0,255,136,0.15);
+    }
+
+    .messages {
+      flex: 1;
+      padding: 18px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .message {
+      max-width: 72%;
+      border: 1px solid rgba(0,255,136,0.35);
+      background: rgba(17, 17, 17, 0.95);
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: 0 0 12px rgba(0, 255, 136, 0.08);
+    }
+
+    .message.me {
+      margin-right: auto;
+      background: rgba(0, 255, 136, 0.12);
+      border-color: #00ff88;
+    }
+
+    .sender {
+      font-size: 13px;
+      color: #00ffee;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .text {
+      color: #9fffd0;
+      line-height: 1.8;
+      font-size: 15px;
+      word-break: break-word;
+    }
+
+    .chat-input {
+      border-top: 1px solid rgba(0, 255, 136, 0.35);
+      padding: 14px;
+      display: flex;
+      gap: 10px;
+      background: rgba(8, 8, 8, 0.96);
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 13px 14px;
+      border-radius: 10px;
+      border: 1px solid #00ff88;
+      background: #111;
+      color: #00ff88;
+      outline: none;
+      font-size: 15px;
+      font-family: inherit;
+    }
+
+    .chat-input input:focus {
+      border-color: #00ffee;
+      box-shadow: 0 0 14px rgba(0,255,238,0.4);
+    }
+
+    .chat-input button {
+      padding: 13px 18px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #00ff88, #00ffee);
+      color: #050505;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.2s ease;
+      font-family: inherit;
+    }
+
+    .chat-input button:hover {
+      box-shadow: 0 0 10px rgba(0, 255, 238, 0.6);
+    }
+
+    .sidebar {
+      width: 320px;
+      background: rgba(10, 10, 10, 0.92);
+      border: 1px solid #00ff88;
+      box-shadow: 0 0 25px rgba(0, 255, 136, 0.35);
+      border-radius: 14px;
+      backdrop-filter: blur(6px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-width: 280px;
+    }
+
+    .sidebar-section {
+      padding: 16px;
+      border-bottom: 1px solid rgba(0,255,136,0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+    }
+    .sidebar-section:last-child {
+      border-bottom: none;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 18px;
+      color: #00ffee;
+      text-shadow: 0 0 10px rgba(0, 255, 238, 0.45);
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      max-height: 100%;
+      padding-right: 4px;
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(0,255,136,0.25);
+      background: rgba(17,17,17,0.9);
+      color: #9fffd0;
+    }
+
+    .item .name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #00ff88;
+      box-shadow: 0 0 10px rgba(0,255,136,0.9);
+      flex: 0 0 auto;
+    }
+
+    .status {
+      font-size: 12px;
+      color: #00ff88;
+      white-space: nowrap;
+    }
+
+    .group-tag {
+      font-size: 12px;
+      color: #00ffee;
+      border: 1px solid rgba(0,255,238,0.35);
+      padding: 4px 8px;
+      border-radius: 999px;
+    }
+
+    .create-group-box {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .create-group-box input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #00ff88;
+      background: #111;
+      color: #00ff88;
+      outline: none;
+      font-size: 15px;
+      font-family: inherit;
+    }
+
+    .create-group-box input:focus {
+      border-color: #00ffee;
+      box-shadow: 0 0 14px rgba(0,255,238,0.4);
+    }
+
+    .create-group-box button {
+      padding: 12px 14px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #00ff88, #00ffee);
+      color: #050505;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.2s ease;
+      font-family: inherit;
+    }
+
+    .create-group-box button:hover {
+      box-shadow: 0 0 10px rgba(0, 255, 238, 0.6);
+    }
+
+
+    @media (max-width: 1000px) {
+      body {
+        overflow: auto;
+        align-items: flex-start;
+      }
+
+      .chat-shell {
+        height: auto;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+      }
+
+      .chat-main {
+        min-height: 70vh;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .chat-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .chat-input {
+        flex-direction: column;
+      }
+
+      .chat-input button {
+        width: 100%;
+      }
+
+      .message {
+        max-width: 92%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="chat-shell">
+    <section class="chat-main">
+      <header class="chat-header">
+        <h1 class="chat-title">CHAT ROOM</h1>
+        <div class="online-badge">آنلاین: <span id="onlineCount">0</span></div>
+      </header>
+
+      <div class="messages" id="messages">
+        <div class="message">
+          <span class="sender">SYSTEM</span>
+          <div class="text">میدونستید قبلا با کلاغ حرف میزدن؟؟؟</div>
+        </div>
+      </div>
+
+      <div class="chat-input">
+        <input type="text" id="messageInput" placeholder="پیام خود را بنویسید..." />
+        <button onclick="sendMessage()">ارسال</button>
+      </div>
+    </section>
+
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <h2 class="section-title">کاربران</h2>
+        <div class="list" id="usersList"></div>
+      </div>
+
+      <div class="sidebar-section">
+        <h2 class="section-title">ساخت گروه</h2>
+        <div class="create-group-box">
+          <input type="text" id="groupNameInput" placeholder="نام گروه..." />
+          <button onclick="createGroup()">ایجاد گروه</button>
+        </div>
+      </div>
+
+      <div class="sidebar-section" style="border-bottom: none;">
+        <h2 class="section-title">گروه‌ها</h2>
+        <div class="list" id="groupsList"></div>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const users = [
+      { name: "Ali", online: true },
+      { name: "Sara", online: true },
+      { name: "Reza", online: false },
+      { name: "Nima", online: true },
+      { name: "Mina", online: false }
+    ];
+
+    let groups = [ // Changed to 'let' to allow modification
+      { name: "Developers" },
+      { name: "Projects" },
+      { name: "Challenges" }
+    ];
+
+    const usersList = document.getElementById("usersList");
+    const groupsList = document.getElementById("groupsList");
+    const onlineCount = document.getElementById("onlineCount");
+    const messages = document.getElementById("messages");
+    const messageInput = document.getElementById("messageInput");
+    const groupNameInput = document.getElementById("groupNameInput"); // Added this
+
+    function renderUsers() {
+      const onlineUsers = users.filter(u => u.online);
+      onlineCount.textContent = onlineUsers.length;
+
+      usersList.innerHTML = users.map(user => `
+        <div class="item">
+          <div class="name">
+            <span class="dot" style="opacity:${user.online ? 1 : 0.25}"></span>
+            <span>${user.name}</span>
+          </div>
+          <span class="status">${user.online ? "ONLINE" : "OFFLINE"}</span>
+        </div>
+      `).join("");
+    }
+
+    function renderGroups() {
+      groupsList.innerHTML = groups.map(group => `
+        <div class="item">
+          <div class="name">
+            <span class="group-tag">GROUP</span>
+            <span>${group.name}</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function sendMessage() {
+      const text = messageInput.value.trim();
+      if (!text) return;
+
+      const msg = document.createElement("div");
+      msg.className = "message me";
+      msg.innerHTML = `
+        <span class="sender">YOU</span>
+        <div class="text"></div>
+      `;
+      msg.querySelector(".text").textContent = text;
+
+      messages.appendChild(msg);
+      messageInput.value = "";
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function createGroup() { // Added this function
+      const name = groupNameInput.value.trim();
+      if (!name) return; // Don't create empty groups
+
+      // Optional: Check for duplicate group names
+      if (groups.some(group => group.name.toLowerCase() === name.toLowerCase())) {
+        alert("این نام گروه قبلاً استفاده شده است!");
+        return;
+      }
+
+      groups.push({ name });
+      renderGroups();
+      groupNameInput.value = "";
+    }
+
+
+    renderUsers();
+    renderGroups();
+
+    messageInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+    
+  </script>
+  <!-- of ffkdn hghk hc hd[kh ldj,kd fi ,dk ',n fvsdn vtjdn nhog ,dk ',n fvnd j, rslj fvkhli k,dsd , vlc 123321 v, fcknd , fvhd frdi ;hv artin12345 v, fckdn , alh ldvdn nhog shdj m,vk fvhd hkdli ih il ldj,kdn hc rslj hk[lk fi zed mdhl fndn , f'dn zero olmar v, f'dn , fvhj,k d; rslj fhc ld;ki j, nhaf,vn ;i lotd isj ;kjvg hd v, f'dvdn , ldfdkdn d; rslj isj fckdn v, h,g khl , khl ;hvfvd , vlcj,k v, fckdn fun fi jvjdk hdk vlc ih v, fcknd fi jvjdk zedolmar1201//artinnitam2iunfe87//~!@#$%^&*()_+//armin0011//arta007/ , ,rjd vsdndn fi rlslj hd md hdms hd;s n;li ;n v, fckdn , fh d; jf [ndn fvdn j, rslj mdhl j, rslj majdfhkd d; ;n ldtvsjl , alh 5 ehkdi ,rj nhvdn h,k, ;md ;kdn , ,hvn ;kdn , jfvd; alh ,hvn shdj m,vk hwgd andn]]]-->
+
+</body>
+</html>

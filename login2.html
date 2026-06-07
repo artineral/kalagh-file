@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Layer 2</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#000,#001f3f,#00aaff);
+    font-family:tahoma;
+    color:white;
+}
+
+.box{
+    width:400px;
+    padding:40px;
+    background:rgba(0,0,0,0.85);
+    border:2px solid #00bfff;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 0 25px #00bfff;
+}
+
+h1{
+    color:#00bfff;
+    margin-bottom:20px;
+}
+
+input{
+    width:100%;
+    padding:15px;
+    font-size:20px;
+    text-align:center;
+    letter-spacing:5px;
+    border:none;
+    border-radius:10px;
+    background:#111;
+    color:white;
+    border:1px solid #00bfff;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    margin-top:20px;
+    background:#00bfff;
+    border:none;
+    border-radius:10px;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    box-shadow:0 0 20px #00bfff;
+}
+
+#error{
+    margin-top:15px;
+    color:red;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>🔐 SECURITY LAYER 2</h1>
+
+<input type="password" id="pin" maxlength="6" placeholder="PIN 6 رقمی">
+
+<button onclick="checkPin()">ورود</button>
+
+<p id="error"></p>
+
+</div>
+
+<script>
+
+/* 🔐*/
+async function hashText(text){
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+const PIN_HASH = "6bdf4c067024c4106c3a8e72cc0c1ea4ead296afada6ee6b2de81afc8c098fcf";
+
+async function checkPin(){
+
+    let pin = document.getElementById("pin").value;
+
+    let pinHash = await hashText(pin);
+
+    if(pinHash === PIN_HASH){
+        window.location.href = "login3.html";
+    } else {
+        document.getElementById("error").innerHTML = "❌ PIN اشتباه است";
+    }
+}
+
+</script>
+
+</body>
+</html>

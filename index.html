@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Layer 1</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:tahoma;
+}
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#000000,#001f3f,#00aaff);
+overflow:hidden;
+}
+
+body::before{
+content:"";
+position:absolute;
+width:100%;
+height:100%;
+background:
+radial-gradient(circle,#00bfff33 1px,transparent 1px);
+background-size:30px 30px;
+animation:move 10s linear infinite;
+}
+
+@keyframes move{
+from{transform:translateY(0);}
+to{transform:translateY(30px);}
+}
+
+.login-box{
+position:relative;
+width:400px;
+padding:40px;
+background:rgba(0,0,0,0.85);
+border:2px solid #00bfff;
+border-radius:15px;
+box-shadow:0 0 30px #00bfff;
+text-align:center;
+z-index:1;
+}
+
+h1{
+color:#00bfff;
+margin-bottom:25px;
+text-shadow:0 0 15px #00bfff;
+}
+
+input{
+width:100%;
+padding:14px;
+margin:12px 0;
+border:none;
+outline:none;
+border-radius:8px;
+background:#111;
+color:white;
+border:1px solid #00bfff;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:20px;
+background:#00bfff;
+border:none;
+border-radius:8px;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+box-shadow:0 0 25px #00bfff;
+transform:scale(1.03);
+}
+
+.error{
+margin-top:10px;
+color:red;
+}
+
+.security{
+margin-bottom:15px;
+color:#aaa;
+font-size:14px;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="login-box">
+
+<h1>🔐 SECURITY LAYER 1</h1>
+
+<div class="security">
+احراز هویت مرحله اول
+</div>
+
+<input type="text" id="username" placeholder="نام کاربری">
+
+<input type="password" id="password" placeholder="رمز عبور">
+
+<button onclick="login()">
+ورود به مرحله دوم
+</button>
+
+<p class="error" id="error"></p>
+
+</div>
+
+<script>
+
+
+
+async function hashText(text){
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+const USERNAME_HASH = "5eab8003f898a46a80ed9d45bb0dcd5a9449c1c76fc056dc7254eb0301f55bda";
+const PASSWORD_HASH = "e8c284513316ed9e1a913ef14e8ac450c59f4eac868e6d70cabc985c6a7cdb5e";
+
+
+
+async function login(){
+
+    let user = document.getElementById("username").value;
+    let pass = document.getElementById("password").value;
+
+    let userHash = await hashText(user);
+    let passHash = await hashText(pass);
+
+    if(userHash === USERNAME_HASH && passHash === PASSWORD_HASH){
+        window.location.href = "login2.html";
+    } else {
+        document.getElementById("error").innerHTML = "اشتباه است";
+    }
+}
+
+
+
+
+</script>
+
+</body>
+</html>
